@@ -10,3 +10,13 @@ body {
     overflow: hidden;
     
 }
+
+.text {
+    position: absolute;
+    color: rgb(31, 57, 207);
+}
+
+.forward {
+    z-index: 3;
+    color: black;
+}

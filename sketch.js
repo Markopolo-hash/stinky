@@ -13,7 +13,7 @@ function preload () {
 	backGround = loadImage('cave.png')
 	bigRingImg = loadImage('big ring mania.png')
 	motobug = loadImage('motobug.png')
-	goal = loadImage('goal.png')
+	goalImg = loadImage('goal.png')
 }
 
 function setup() {
@@ -63,6 +63,20 @@ function setup() {
 	player.overlaps(rings,collect)
 	player.overlaps(bigRing,big)
 
+
+	goal = new Group();
+	goal.w = 44;
+	goal.h = 50;
+	goal.spriteSheet = goalImg
+	goal.anis.frameDelay = 5;
+	goal.tile = "G"
+	goal.collider = 'static'
+	goal.addAnis({
+		still: {row:0, frames:1},
+		spin: {row:1, frames: 13}
+	});
+
+
 	walls = new Group();
 	walls.w = 48;
 	walls.h = 32;
@@ -83,19 +97,6 @@ function setup() {
 	block.tile = "_";
 	block.collider = 'static';
 	block.image = "block.png";
-
-	goal = new Group();
-	goal.w = 44;
-	goal.h = 50;
-	goal.spriteSheet = goal
-	goal.anis.frameDelay = 5;
-	goal.tile = "G"
-	goal.collider = 'static'
-	goal.addAnis({
-		still: {row:0, frames:1},
-		spin: {row:1, frames: 13}
-	});
-	player.overlaps(goal,finish)
 	
 	tileMap = new Tiles(
 		['________________________________________________________________________________________________________',
@@ -159,12 +160,11 @@ function draw() {
 	background('purple');
 
 	controls()
-	fill(0)
+	fill(31, 57, 207)
 	textSize(30)
-	text("Rings: " + score,100,100)
-	
-	image(backGround, 0, 0, width, height);
 
+	image(backGround, 0, 0, width, height);
+	text("Rings: " + score,100,100)
 }
 
 function controls(){
@@ -199,7 +199,6 @@ function controls(){
 		//player.changeAni('stand')
 	}
 
-console.log(floor(player.vel.y))
 	if(player.vel.x < 0 || player.vel.x > 0){
 		player.changeAni('run')
 	}
@@ -250,8 +249,3 @@ function enemysetup(){
 	enemy.anis.offset.y = 0
   }
 
- function finish () {
-	if(player.collides(goal)) {
-		goal.changeAni('spin');
-	}
-}
