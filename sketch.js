@@ -21,6 +21,7 @@ function preload () {
 	rockGrassImg = loadImage('rock grass.png')
 	marbleImg = loadImage('marble.png')
 	boulderImg = loadImage('boulder.png')
+	spikeImg = loadImage('spikes.png')
 }
 
 function setup() {
@@ -145,8 +146,12 @@ function setup() {
 		spin: {row:1, frames: 13}
 	});
 
-	
-	
+	spike = new Group();
+	spike.w = 32;
+	spike.h = 32;
+	spike.tile = "s";
+	spike.collider = 'static';
+	spike.image = "spikes.png";
 	level1 = new Tiles(
 		['________________________________________________________________________________________________________',
 		 '________________________________________________________________________________________________________',	
@@ -177,7 +182,7 @@ function setup() {
 		 '-.........................===..........-..................._.........................-===.....ooo......-',
 		 '-......................................-..................._..................................===......-',
 		 '-......................................-..................._...........................................-',
-		 '-.....................G................-..................._.................========..................-',
+		 '-......................................-..................._.................========..................-',
 		 '========================================..................._........................-..................-',
 		 '________________________________________..................._........................-..................-',
 		 '________________________________________..................._........................-==================-',
@@ -222,7 +227,7 @@ function setup() {
 		 'r.................o...ggg........r......................................mmmm...........................r',
 		 'r.................b.....................................................mmmm...........................r',
 		 'r.................m.....................................................mmmm...........................r',
-		 'r.................m.....................................................mmmm...............f...........r',
+		 'r.................msssssssssssssssssssssssssssssssssssssssssssssssssssssmmmm...............f...........r',
 		 'rgggggggggggggggggmgggggggggggggggggggggggggggggggggggggggggggggggggggggmmmmgggggggggggggggggggggg...ggr',
 		 'rmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm...mmr',
 		 'rmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm.....mmmmg..mmr',
@@ -254,6 +259,7 @@ function draw() {
 	camera.y = player.y;
 	background('purple');
 
+	
 	controls()
 	fill(255, 255, 0)
 	textSize(30)
@@ -271,8 +277,9 @@ function draw() {
         text("You Win!", width / 2, height / 2);
     }
 
-	finishLevel()
-	finishGame()
+	resetLevel();
+	finishLevel();
+	finishGame();
 
 
 }
@@ -357,5 +364,14 @@ function finishGame() {
     if (player.overlaps(finish)) {
 
         winMessage = true; // Set the win message flag to true
+    }
+}
+
+function resetLevel() {
+    if (player.overlaps(spike)) {
+        // Reset the player's position and score
+        player.x = 200; // Starting x position
+        player.y = 2300; // Starting y position
+        score = 0; // Reset score
     }
 }
