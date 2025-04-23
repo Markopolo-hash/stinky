@@ -22,6 +22,7 @@ function preload () {
 	marbleImg = loadImage('marble.png')
 	boulderImg = loadImage('boulder.png')
 	spikeImg = loadImage('spikes.png')
+	outsideImg = loadImage('outside.png')
 }
 
 function setup() {
@@ -264,7 +265,7 @@ function draw() {
 	fill(255, 255, 0)
 	textSize(30)
 
-	image(backGround, 0, 0, width, height);
+	image(outsideImg, 0, 0, width, height);
 	text("Rings: " + score,100,100)
 	text("Level: " + level,100,150)
 
