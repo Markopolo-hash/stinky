@@ -9,10 +9,12 @@ let score = 0;
 let level = 1;
 let win;
 let winMessage = false; // Flag to track if the player has won
+let gameState = "menu"; // State to track the current screen
+let startButton, instructionsButton, exitButton;
 
 function preload () {
-	img = loadImage('sonic mania sonic.png')
-	ringImg = loadImage('Rings.png')
+	img = loadImage('character.png')
+	ringImg = loadImage('coin.png')
 	backGround = loadImage('cave.png')
 	bigRingImg = loadImage('big ring mania.png')
 	motobug = loadImage('motobug.png')
@@ -28,10 +30,29 @@ function preload () {
 function setup() {
 	createCanvas(windowWidth, windowHeight);
 
+	
+    // Create buttons for the main menu
+    startButton = createButton('Start');
+    startButton.position(width / 2 - 50, height / 2 - 60);
+    startButton.mousePressed(startGame);
+
+    instructionsButton = createButton('Instructions');
+    instructionsButton.position(width / 2 - 50, height / 2);
+    instructionsButton.mousePressed(showInstructions);
+
+    exitButton = createButton('Exit Game');
+    exitButton.position(width / 2 - 50, height / 2 + 60);
+    exitButton.mousePressed(exitGame);
+
+    // Hide buttons initially
+    startButton.hide();
+    instructionsButton.hide();
+    exitButton.hide();
+
 	world.gravity.y = 20;
 	player = new Sprite(200,900)
-	player.w = 48;
-	player.h = 48;
+	player.w = 16;
+	player.h = 32;
 	player.rotationLock = true
 	player.spriteSheet = img;
 		player.anis.frameDelay = 4;
@@ -40,8 +61,8 @@ function setup() {
 		player.addAnis( {
 		stand: { row:0 },
 		duck: { row: 3, frames: 5},
-		run: { row: 1, frames:  12},
-		jump: { row: 2, frames: 16}
+		run: { row: 0, frames:  4},
+		jump: { row: 1, frames: 2}
 	});
 
 
@@ -54,7 +75,7 @@ function setup() {
 	rings.scale = 1.5;
 
 	rings.addAnis( {
-		spin: {row:0, frames: 8},
+		spin: {row:0, frames: 7},
 	});
 
 
@@ -94,7 +115,7 @@ function setup() {
 	walls.image = "block.png"
 
 	ground = new Group();
-	ground.w = 64;
+	ground.w = 107;
 	ground.h = 32;
 	ground.tile = "=";
 	ground.collider = 'static';
@@ -255,34 +276,109 @@ function setup() {
 }
 
 function draw() {
-	camera.zoom = 1.5;
-	camera.x = player.x;
-	camera.y = player.y;
-	background('purple');
+
+	if (gameState === "menu") {
+        drawMenu();
+    } else if (gameState === "instructions") {
+        drawInstructions();
+    } else if (gameState === "game") {
+        drawGame();
+    }
+
+
+
+
+
+}
+
+function drawMenu() {
+    background(0);
+    fill(251, 255, 0);
+    textSize(50);
+    textAlign(CENTER, CENTER);
+	image(backGround, 0, 0, width, height);
+    text("Princess Run", width / 2, height / 4);
+
+
+
+    startButton.show();
+    instructionsButton.show();
+    exitButton.show();
+}
+
+function drawInstructions() {
+	
+    background(0);
+    fill(255);
+    textSize(30);
+    textAlign(CENTER, CENTER);
+	image(backGround, 0, 0, width, height);
+    text("Instructions:\nUse 'A' and 'D' to move.\nPress 'Space' to jump.\nAvoid obstacles and collect coins.", width / 2, height / 2);
+
+
+    startButton.hide();
+    instructionsButton.hide();
+    exitButton.hide();
+
+
+    let backButton = createButton('Back');
+    backButton.position(width / 2 - 50, height - 100);
+    backButton.mousePressed(() => {
+        gameState = "menu";
+        backButton.remove();
+    });
+}
+
+function drawGame() {
+
+    startButton.hide();
+    instructionsButton.hide();
+    exitButton.hide();
+
+
+    camera.zoom = 1.5;
+    camera.x = player.x;
+    camera.y = player.y;
+    background('purple');
+
+    controls();
+    fill(255, 255, 0);
+    textSize(30);
+
+    image(outsideImg, 0, 0, width, height);
+    text("Coins: " + score, 100, 100);
+    text("Level: " + level, 100, 150);
 
 	
-	controls()
-	fill(255, 255, 0)
-	textSize(30)
 
-	image(outsideImg, 0, 0, width, height);
-	text("Rings: " + score,100,100)
-	text("Level: " + level,100,150)
-
-
-	if (winMessage) {
-        // Display "You Win" in the middle of the screen
+    if (winMessage) {
         textSize(50);
         fill(255, 0, 0);
         textAlign(CENTER, CENTER);
-        text("You Win!", width / 2, height / 2);
+        text("You Win!", width / 2, height / 4);
     }
 
-	resetLevel();
-	finishLevel();
-	finishGame();
+    resetLevel();
+    finishLevel();
+    finishGame();
+}
 
+function startGame() {
+    gameState = "game";
+}
 
+function showInstructions() {
+    gameState = "instructions";
+}
+
+function exitGame() {
+    // Exit the game (this won't close the browser but can be used to stop the game logic)
+    noLoop();
+    background(0);
+    fill(255);
+    textSize(50);
+    textAlign(CENTER, CENTER);
+    text("Game Exited", width / 2, height / 2);
 }
 
 function controls(){
